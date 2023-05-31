@@ -1,0 +1,90 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.github.kuweiguge.cleancodesweep</id>
+    <name>Clean-Code-Sweep</name>
+    <vendor>kuweiguge</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <description>
+        <![CDATA[
+      中文介绍：
+      代码小工具合集，包含以下功能：
+        1. 去掉文件空白行。
+        2. Mapper接口文件方法参数添加@param注解，自动提取方法参数名作为@Param注解的value值。
+        3. 类属性单行注释转JavaDoc注释。(很多一键生成文档的插件，如FastRequest，都是基于JavaDoc注释的，所以这个功能可以配合这些插件使用)
+        4. 根据类属性的文档注释给类属性添加注解，如：根据文档注释生成@ApiModelProperty注解,@ExcelProperty注解,@JsonProperty注解等。
+        呼出菜单快捷键：<b>ctrl+alt+c</b>
+        所有功能都可以在当前文件，选中文件，选中文件夹等级别使用，会对选中的所有文件生效。
+        更多小功能正在开发中，欢迎Github提出建议。
+      <br/>
+      English introduction:
+        A collection of small code tools, including the following functions:
+        1. Remove blank lines from the file.
+        2. Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
+        3. Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
+        4. Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc. according to document comments.
+        call menu shortcut key：<b>ctrl+alt+c</b>
+        All functions can be used at the current file level, selected file level, and selected folder level. They will take effect on all selected files.
+        More small functions are under development. Welcome to GitHub for suggestions.
+
+    ]]>
+    </description>
+    <change-notes>
+        <![CDATA[
+      <ul>
+        <li><b>0.0.1</b> First release.</li>
+      </ul>
+    ]]>
+    </change-notes>
+
+    <resource-bundle>messages.MenuBundle</resource-bundle>
+    <resource-bundle>messages.DocCommentBundle</resource-bundle>
+    <resource-bundle>messages.NotifyBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="Clean Code Sweep Notification Group"/>
+    </extensions>
+
+    <applicationListeners>
+    </applicationListeners>
+    <actions resource-bundle="messages.MenuBundle">
+        <!--弹出菜单-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.CCSMenuAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.CCSMenuAction">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt C"/>
+        </action>
+        <!--去掉空白行-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction"
+                icon="AllIcons.FileTypes.Any_type">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt R"/>
+        </action>
+        <!--Mapper接口文件方法参数添加@param注解-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.MapperAddParamAnnotationAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.MapperAddParamAnnotationAction"
+                icon="AllIcons.Nodes.Annotationtype">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt P"/>
+        </action>
+        <!--类属性单行注释转JavaDoc注释-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.ToggleLineCommentAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.ToggleLineCommentAction"
+                icon="AllIcons.Actions.InlayRenameInCommentsActive">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt T"/>
+        </action>
+        <!--根据文档注释添加一些代码-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.AddCodeByDocCommentAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.AddCodeByDocCommentAction"
+                icon="AllIcons.Nodes.Annotationtype">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt A"/>
+        </action>
+
+        <!--给类加字段-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.AddPropertyAction"
+                class="com.github.kuweiguge.cleancodesweep.actions.AddPropertyAction"
+                icon="AllIcons.Nodes.Field">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt F"/>
+        </action>
+    </actions>
+</idea-plugin>
