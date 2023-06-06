@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0
  * @since 2023/6/2 09:10
  */
-public class ToggleLineCommentAction extends AnAction {
+public class LineCommentToggler extends AnAction {
     public static final String LINE_BREAK = "\n";
     public static final String JAVA_DOC_START = "/**";
     public static final String JAVA_DOC_END = "*/";

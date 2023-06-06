@@ -8,8 +8,6 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.JBPopupListener;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
@@ -27,7 +25,7 @@ import java.util.ResourceBundle;
  * @version 1.0
  * @since 2023/6/2 09:10
  */
-public class AddCodeByDocCommentAction extends AnAction {
+public class DocCommentBasedCodeGenerator extends AnAction {
     ResourceBundle bundle = ResourceBundle.getBundle("messages.DocCommentBundle", Locale.getDefault());
     ResourceBundle notifyBundle = ResourceBundle.getBundle("messages.NotifyBundle", Locale.getDefault());
     @Override

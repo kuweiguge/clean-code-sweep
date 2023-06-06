@@ -1,6 +1,6 @@
 package com.github.kuweiguge.cleancodesweep.utils;
 
-import com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction;
+import com.github.kuweiguge.cleancodesweep.actions.BlankLinesRemover;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
@@ -15,14 +15,14 @@ import java.util.function.Consumer;
  * @since 2023/6/1 10:18
  */
 public class FileUtils {
-    private static final Logger LOG = Logger.getInstance(RemoveBlankLinesAction.class);
+    private static final Logger LOG = Logger.getInstance(BlankLinesRemover.class);
 
     /**
      * 递归方法，如果是文件夹就递归，如果是文件就执行文件操作
      */
     public static void recursiveFileSearch(VirtualFile file, Consumer<VirtualFile> consumer) {
         if (file == null || !file.exists()) {
-            LOG.warn("RemoveBlankLinesAction failed: file is null or not exists");
+            LOG.warn("BlankLinesRemover failed: file is null or not exists");
             return;
         }
         if (file.isDirectory()) {
@@ -48,7 +48,7 @@ public class FileUtils {
      */
     public static void removeDocumentBlankLine(VirtualFile file) {
         if (file == null || !file.exists() || file.isDirectory()) {
-            LOG.warn("RemoveBlankLinesAction failed: file is null or not exists or is directory");
+            LOG.warn("BlankLinesRemover failed: file is null or not exists or is directory");
             return;
         }
         Document document = FileDocumentManager.getInstance().getDocument(file);

@@ -3,25 +3,20 @@
 ![Build](https://github.com/kuweiguge/clean-code-sweep/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/21947-clean-code-sweep.svg)](https://plugins.jetbrains.com/plugin/21947-clean-code-sweep)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/21947-clean-code-sweep.svg)](https://plugins.jetbrains.com/plugin/21947-clean-code-sweep)
-
+[![Slack](https://img.shields.io/badge/Slack-%23WinterCode-blue?style=flat-square&logo=Slack)](https://wintercodehq.slack.com)
+<!-- Plugin description -->
 ## Introduction
 A collection of small code tools.<br>
 call menu shortcut key：<b>ctrl+alt+c</b><br>
 All functions can be used at the current file level, selected file level, and selected folder level. They will take effect on all selected files.<br>
-More small functions are under development. Welcome to GitHub for suggestions.
+More small functions are under development. Welcome to [Slack](https://wintercodehq.slack.com) or GitHub issue for suggestions.
 ## ToDo list
 - [x] Create a new [IntelliJ Platform Plugin Template][template] project.
 - [x] Add Function: Remove blank lines from the file.
 - [x] Add Function: Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
 - [x] Add Function: Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
 - [x] Add Function: Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc. according to document comments.
-- [ ] Add Function: Add multiple fields to multiple selected entity classes with one click.
-<!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
-
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
-
-To keep everything working, do not remove `<!-- ... -->` sections. 
+- [ ] Add Function: something else...
 <!-- Plugin description end -->
 
 ## Installation

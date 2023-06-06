@@ -16,18 +16,17 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0
  * @since 2023/6/1 16:15
  */
-public class CCSMenuAction extends AnAction {
+public class Menu extends AnAction {
 
     /**
      * 菜单项
      */
     public static final String[] ACTIONS = {
-            "com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction",
-            "com.github.kuweiguge.cleancodesweep.actions.MapperAddParamAnnotationAction",
-            "com.github.kuweiguge.cleancodesweep.actions.ToggleLineCommentAction",
-            "com.github.kuweiguge.cleancodesweep.actions.AddCodeByDocCommentAction",
-            "com.github.kuweiguge.cleancodesweep.actions.AddPropertyAction",
-            "com.github.kuweiguge.cleancodesweep.actions.PathToFormAction"};
+            "com.github.kuweiguge.cleancodesweep.actions.BlankLinesRemover",
+            "com.github.kuweiguge.cleancodesweep.actions.ParamAnnotationMapper",
+            "com.github.kuweiguge.cleancodesweep.actions.LineCommentToggler",
+            "com.github.kuweiguge.cleancodesweep.actions.DocCommentBasedCodeGenerator",
+    };
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

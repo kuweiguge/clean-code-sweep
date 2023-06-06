@@ -4,3 +4,4 @@
 build
 .fastRequest
 .vscode
+.DS_Store

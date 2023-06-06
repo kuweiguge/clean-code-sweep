@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 /**
  * 去除文件中的空白行
  */
-public class RemoveBlankLinesAction extends AnAction {
+public class BlankLinesRemover extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {

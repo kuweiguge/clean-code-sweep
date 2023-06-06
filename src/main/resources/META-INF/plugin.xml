@@ -7,8 +7,17 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
 
-    <description>
-        <![CDATA[
+    <description><![CDATA[
+    English introduction:
+        A collection of small code tools, including the following functions:
+        1. Remove blank lines from the file.
+        2. Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
+        3. Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
+        4. Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc. according to document comments.
+        call menu shortcut key：<b>ctrl+alt+c</b>
+        All functions can be used at the current file level, selected file level, and selected folder level. They will take effect on all selected files.
+        More small functions are under development. Welcome to GitHub for suggestions.
+      <br/>
       中文介绍：
       代码小工具合集，包含以下功能：
         1. 去掉文件空白行。
@@ -18,23 +27,12 @@
         呼出菜单快捷键：<b>ctrl+alt+c</b>
         所有功能都可以在当前文件，选中文件，选中文件夹等级别使用，会对选中的所有文件生效。
         更多小功能正在开发中，欢迎Github提出建议。
-      <br/>
-      English introduction:
-        A collection of small code tools, including the following functions:
-        1. Remove blank lines from the file.
-        2. Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
-        3. Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
-        4. Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc. according to document comments.
-        call menu shortcut key：<b>ctrl+alt+c</b>
-        All functions can be used at the current file level, selected file level, and selected folder level. They will take effect on all selected files.
-        More small functions are under development. Welcome to GitHub for suggestions.
-
-    ]]>
-    </description>
+    ]]></description>
     <change-notes>
-        <![CDATA[
+    <![CDATA[
       <ul>
         <li><b>0.0.1</b> First release.</li>
+        <li><b>0.0.2</b> Update plugin description.</li>
       </ul>
     ]]>
     </change-notes>
@@ -51,40 +49,33 @@
     </applicationListeners>
     <actions resource-bundle="messages.MenuBundle">
         <!--弹出菜单-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.CCSMenuAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.CCSMenuAction">
+        <action id="com.github.kuweiguge.cleancodesweep.actions.Menu"
+                class="com.github.kuweiguge.cleancodesweep.actions.Menu">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt C"/>
         </action>
         <!--去掉空白行-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.RemoveBlankLinesAction"
-                icon="AllIcons.FileTypes.Any_type">
+        <action id="com.github.kuweiguge.cleancodesweep.actions.BlankLinesRemover"
+                class="com.github.kuweiguge.cleancodesweep.actions.BlankLinesRemover"
+                icon="AllIcons.Actions.GC">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt R"/>
         </action>
         <!--Mapper接口文件方法参数添加@param注解-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.MapperAddParamAnnotationAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.MapperAddParamAnnotationAction"
+        <action id="com.github.kuweiguge.cleancodesweep.actions.ParamAnnotationMapper"
+                class="com.github.kuweiguge.cleancodesweep.actions.ParamAnnotationMapper"
                 icon="AllIcons.Nodes.Annotationtype">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt P"/>
         </action>
         <!--类属性单行注释转JavaDoc注释-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.ToggleLineCommentAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.ToggleLineCommentAction"
+        <action id="com.github.kuweiguge.cleancodesweep.actions.LineCommentToggler"
+                class="com.github.kuweiguge.cleancodesweep.actions.LineCommentToggler"
                 icon="AllIcons.Actions.InlayRenameInCommentsActive">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt T"/>
         </action>
         <!--根据文档注释添加一些代码-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.AddCodeByDocCommentAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.AddCodeByDocCommentAction"
+        <action id="com.github.kuweiguge.cleancodesweep.actions.DocCommentBasedCodeGenerator"
+                class="com.github.kuweiguge.cleancodesweep.actions.DocCommentBasedCodeGenerator"
                 icon="AllIcons.Nodes.Annotationtype">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt A"/>
-        </action>
-
-        <!--给类加字段-->
-        <action id="com.github.kuweiguge.cleancodesweep.actions.AddPropertyAction"
-                class="com.github.kuweiguge.cleancodesweep.actions.AddPropertyAction"
-                icon="AllIcons.Nodes.Field">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt F"/>
         </action>
     </actions>
 </idea-plugin>

@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0
  * @since 2023/6/1 10:16
  */
-public class MapperAddParamAnnotationAction extends AnAction {
+public class ParamAnnotationMapper extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
