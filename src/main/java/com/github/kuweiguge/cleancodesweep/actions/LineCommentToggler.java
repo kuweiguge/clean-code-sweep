@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -29,54 +28,46 @@ public class LineCommentToggler extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        // 获取当前选中的文件
+        // 获取当前选中的文件或文件夹列表
         VirtualFile[] files = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY);
         if (files != null && project != null) {
             for (VirtualFile file : files) {
+                JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
                 FileUtils.recursiveFileSearch(file, f -> {
-                    PsiFile psiFile = PsiManager.getInstance(project).findFile(f);
-                    if (psiFile == null) {
-                        return;
-                    }
-                    // 获取当前文件的所有PsiClass
-                    PsiClass[] psiClasses = PsiTreeUtil.getChildrenOfType(psiFile, PsiClass.class);
-                    if (psiClasses == null) {
-                        return;
-                    }
-                    for (PsiClass psiClass : psiClasses) {
-                        //获取当前类的属性列表
-                        PsiField[] psiFields = psiClass.getFields();
-                        //获取字段上的单行注释
-                        for (PsiField psiField : psiFields) {
-                            PsiDocComment docComment = psiField.getDocComment();
-                            if (docComment != null) {
-                                return;
-                            }
-                            PsiElement[] children = psiField.getChildren();
-                            StringBuilder commentTextBuilder = new StringBuilder();
-                            //收集所有单行注释
-                            for (PsiElement child : children) {
-                                if (child instanceof PsiComment) {
-                                    PsiComment comment = (PsiComment) child;
-                                    String commentText = comment.getText();
-                                    if(commentText.contains(LINE_COMMENT_START)){
-                                        commentText = commentText.replace(LINE_COMMENT_START,"").trim();
-                                        commentTextBuilder.append(SPACE).append(commentText).append(LINE_BREAK);
-                                        //删除单行注释
-                                        WriteCommandAction.runWriteCommandAction(project, comment::delete);
-                                    }
+                    PsiJavaFile javaFile = (PsiJavaFile) PsiManager.getInstance(project).findFile(f);
+                    if (javaFile == null) return;
+                    PsiClass javaFileClass = facade.findClass(javaFile.getPackageName() + "." + javaFile.getName().replace(".java", ""), javaFile.getResolveScope());
+                    if (javaFileClass == null) return;
+                    //获取当前类的属性列表
+                    PsiField[] psiFields = javaFileClass.getFields();
+                    //获取字段上的单行注释
+                    for (PsiField psiField : psiFields) {
+                        PsiDocComment docComment = psiField.getDocComment();
+                        if (docComment != null) return;
+                        PsiElement[] children = psiField.getChildren();
+                        StringBuilder commentTextBuilder = new StringBuilder();
+                        //收集所有单行注释
+                        for (PsiElement child : children) {
+                            if (child instanceof PsiComment) {
+                                PsiComment comment = (PsiComment) child;
+                                String commentText = comment.getText();
+                                if (commentText.contains(LINE_COMMENT_START)) {
+                                    commentText = commentText.replace(LINE_COMMENT_START, "").trim();
+                                    commentTextBuilder.append(SPACE).append(commentText).append(LINE_BREAK);
+                                    //删除单行注释
+                                    WriteCommandAction.runWriteCommandAction(project, comment::delete);
                                 }
                             }
-                            String commentText = commentTextBuilder.toString();
-                            //拼接JavaDoc注释
-                            String finalReplace = JAVA_DOC_START + LINE_BREAK  + commentText + JAVA_DOC_END;
-                            //添加JavaDoc注释
-                            WriteCommandAction.runWriteCommandAction(project, () -> {
-                                PsiComment commentFromText = JavaPsiFacade.getElementFactory(project).createCommentFromText(finalReplace, psiField);
-                                psiField.addBefore(commentFromText, psiField.getFirstChild());
-                            });
-
                         }
+                        String commentText = commentTextBuilder.toString();
+                        //拼接JavaDoc注释
+                        String finalReplace = JAVA_DOC_START + LINE_BREAK + commentText + JAVA_DOC_END;
+                        //添加JavaDoc注释
+                        WriteCommandAction.runWriteCommandAction(project, () -> {
+                            PsiComment commentFromText = JavaPsiFacade.getElementFactory(project).createCommentFromText(finalReplace, psiField);
+                            psiField.addBefore(commentFromText, psiField.getFirstChild());
+                        });
+
                     }
                 });
             }

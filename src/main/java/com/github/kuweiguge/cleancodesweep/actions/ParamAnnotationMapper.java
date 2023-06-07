@@ -1,7 +1,7 @@
 package com.github.kuweiguge.cleancodesweep.actions;
 
-import com.github.kuweiguge.cleancodesweep.notifications.Notifier;
 import com.github.kuweiguge.cleancodesweep.utils.FileUtils;
+import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -9,7 +9,8 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,83 +22,48 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ParamAnnotationMapper extends AnAction {
 
+    public static final String MAPPER_JAVA = "Mapper.java";
+    public static final String AT = "@";
+    public static final String LEFT_PAR = "(\"";
+    public static final String RIGHT_PAR = "\")";
+    private final String FULL_QUALIFIED_NAME = "org.apache.ibatis.annotations.Param";
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        String paramAnnotation = "@Param";
         Project project = e.getProject();
-        // 获取当前选中的文件列表
+        // 获取当前选中的文件或文件夹列表
         VirtualFile[] files = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY);
         if (files != null && project != null) {
+            JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
             for (VirtualFile file : files) {
                 FileUtils.recursiveFileSearch(file, f -> {
-                    PsiFile psiFile = PsiManager.getInstance(project).findFile(f);
-                    if (psiFile == null) {
-                        return;
-                    }
-                    if (!psiFile.getName().endsWith("Mapper.java")) {
-                        return;
-                    }
-                    //添加import org.apache.ibatis.annotations.Param;语句
-                    PsiClass listClass = JavaPsiFacade.getInstance(project).findClass("org.apache.ibatis.annotations.Param", psiFile.getResolveScope());
-                    if (listClass == null) {
-                        //弹气泡框提示缺少Ibatis依赖
-                        Notifier.notifyError(project, "Please add Ibatis dependency first!");
-                        return;
-                    }
-                    // 获取当前文件的所有PsiClass
-                    PsiClass[] psiClasses = PsiTreeUtil.getChildrenOfType(psiFile, PsiClass.class);
-                    if (psiClasses == null) {
-                        return;
-                    }
-                    //判断是否已经导入了org.apache.ibatis.annotations.Param
-                    boolean hasImport = false;
-                    PsiImportList psiImportList = PsiTreeUtil.getChildOfType(psiFile, PsiImportList.class);
-                    if (psiImportList != null) {
-                        PsiImportStatement[] psiImportStatements = psiImportList.getImportStatements();
-                        for (PsiImportStatement psiImportStatement : psiImportStatements) {
-                            if (psiImportStatement.getText().contains("org.apache.ibatis.annotations.Param")) {
-                                hasImport = true;
-                                break;
+                    PsiJavaFile javaFile = (PsiJavaFile) PsiManager.getInstance(project).findFile(f);
+                    //判断是否是Mapper文件
+                    if (javaFile == null || !javaFile.getName().endsWith(MAPPER_JAVA)) return;
+                    PsiClass javaFileClass = facade.findClass(javaFile.getPackageName() + "." + javaFile.getName().replace(".java", ""), javaFile.getResolveScope());
+                    //跳过非接口的Mapper.java
+                    if (javaFileClass == null || !javaFileClass.isInterface()) return;
+                    // 获取当前类的所有方法
+                    PsiMethod[] psiMethods = javaFileClass.getMethods();
+                    for (PsiMethod psiMethod : psiMethods) {
+                        // 获取方法的所有参数
+                        PsiParameter[] psiParameters = psiMethod.getParameterList().getParameters();
+                        for (PsiParameter psiParameter : psiParameters) {
+                            // 判断当前参数是否有@Param注解
+                            PsiAnnotation methodParamAnno = AnnotationUtil.findAnnotation(psiParameter, FULL_QUALIFIED_NAME);
+                            // 如果没有@Param注解，则添加
+                            if (methodParamAnno == null) {
+                                PsiAnnotation psiAnnotation = JavaPsiFacade.getElementFactory(project).createAnnotationFromText(AT + FULL_QUALIFIED_NAME + LEFT_PAR + psiParameter.getName() + RIGHT_PAR, psiParameter);
+                                WriteCommandAction.runWriteCommandAction(project, () -> {
+                                    psiParameter.addBefore(psiAnnotation, psiParameter.getFirstChild());
+                                    // 添加注解时，使用完全限定的名称，之后调用此方法，会自动导包，并且将注解替换为短名称
+                                    JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiMethod);
+                                });
                             }
                         }
-                    }
-                    for (PsiClass psiClass : psiClasses) {
-                        //跳过非接口Mapper.java
-                        if (!psiClass.isInterface()) {
-                            continue;
-                        }
-                        //如果没有导入，则添加
-                        if (!hasImport) {
-                            PsiImportStatement psiImportStatement = JavaPsiFacade.getElementFactory(project).createImportStatement(listClass);
-                            WriteCommandAction.runWriteCommandAction(project, () -> {
-                                psiFile.addAfter(psiImportStatement, psiFile.getFirstChild());
-                            });
-                        }
-                        // 获取当前类的所有方法
-                        PsiMethod[] psiMethods = psiClass.getMethods();
-                        for (PsiMethod psiMethod : psiMethods) {
-                            // 获取方法的所有参数
-                            PsiParameter[] psiParameters = psiMethod.getParameterList().getParameters();
-                            for (PsiParameter psiParameter : psiParameters) {
-                                // 获取参数的注解列表
-                                PsiAnnotation[] psiAnnotations = psiParameter.getAnnotations();
-                                boolean hasParamAnnotation = false;
-                                for (PsiAnnotation psiAnnotation : psiAnnotations) {
-                                    // 判断是否有@Param注解
-                                    if (psiAnnotation.getText() != null && psiAnnotation.getText().startsWith(paramAnnotation)) {
-                                        hasParamAnnotation = true;
-                                        break;
-                                    }
-                                }
-                                // 如果没有@Param注解，则添加
-                                if (!hasParamAnnotation) {
-                                    PsiAnnotation psiAnnotation = JavaPsiFacade.getElementFactory(project).createAnnotationFromText(paramAnnotation + "(\"" + psiParameter.getName() + "\")", psiParameter);
-                                    WriteCommandAction.runWriteCommandAction(project, () -> {
-                                        psiParameter.addBefore(psiAnnotation, psiParameter.getFirstChild());
-                                    });
-                                }
-                            }
-                        }
+                        WriteCommandAction.runWriteCommandAction(project, () -> {
+                            CodeStyleManager.getInstance(project).reformat(psiMethod);
+                        });
                     }
                 });
             }

@@ -13,6 +13,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -26,9 +28,10 @@ import java.util.ResourceBundle;
  * @version 1.0
  * @since 2023/6/2 09:10
  */
-public class DocCommentBasedCodeGenerator extends AnAction {
+public class FieldBasedCodeGenerator extends AnAction {
     ResourceBundle bundle = ResourceBundle.getBundle("messages.DocCommentBundle", Locale.getDefault());
     ResourceBundle notifyBundle = ResourceBundle.getBundle("messages.NotifyBundle", Locale.getDefault());
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
@@ -58,7 +61,6 @@ public class DocCommentBasedCodeGenerator extends AnAction {
         JButton jsonPropertyButton = new JButton(bundle.getString("addJs"));
         jsonPropertyButton.addActionListener(e1 -> doAction(e, project, "@com.fasterxml.jackson.annotation.JsonProperty(value = ", ")"));
         JLabel prefixLabel = new JLabel(bundle.getString("prefix"));
-        prefixLabel.setToolTipText(bundle.getString("prefixTip"));
         JLabel suffixLabel = new JLabel(bundle.getString("suffix"));
         JTextField prefix = new JTextField(20);
         JTextField suffix = new JTextField(10);
@@ -103,24 +105,21 @@ public class DocCommentBasedCodeGenerator extends AnAction {
                     if (javaFileClass == null) return;
                     //获取当前类的属性列表
                     PsiField[] psiFields = javaFileClass.getFields();
+                    //获取字段上的单行注释
                     for (PsiField psiField : psiFields) {
-                        //获取属性的文档注释
+                        String fieldName = psiField.getName();
+                        if (StringUtils.isBlank(fieldName)) continue;
+                        PsiAnnotation annotationFromText = elementFactory.createAnnotationFromText(prefix + "\"" + fieldName + "\"" + suffix, psiField);
                         PsiDocComment docComment = psiField.getDocComment();
-                        if (docComment == null) {
-                            continue;
-                        }
-                        String commentText = docComment.getText();
-                        //去文档注释的第二行，去掉前面的 *空格
-                        String[] split = commentText.split("\n");
-                        if (split.length < 2) {
-                            continue;
-                        }
-                        String comment = split[1].split("\\*")[1].trim();
-                        PsiAnnotation annotationFromText = elementFactory.createAnnotationFromText(prefix + "\"" + comment + "\"" + suffix, psiField);
                         //添加@ExcelProperty注解
                         WriteCommandAction.runWriteCommandAction(project, () -> {
-                            psiField.addAfter(annotationFromText, psiField.getFirstChild());
-                            JavaCodeStyleManager.getInstance(project).shortenClassReferences(javaFileClass);
+                            if (docComment != null){
+                                psiField.addAfter(annotationFromText, psiField.getFirstChild());
+                            }else{
+                                psiField.addBefore(annotationFromText, psiField.getFirstChild());
+                            }
+                            JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiField);
+                            CodeStyleManager.getInstance(project).reformat(psiField);
                         });
                     }
                     WriteCommandAction.runWriteCommandAction(project, () -> {

@@ -26,6 +26,7 @@ public class Menu extends AnAction {
             "com.github.kuweiguge.cleancodesweep.actions.ParamAnnotationMapper",
             "com.github.kuweiguge.cleancodesweep.actions.LineCommentToggler",
             "com.github.kuweiguge.cleancodesweep.actions.DocCommentBasedCodeGenerator",
+            "com.github.kuweiguge.cleancodesweep.actions.FieldBasedCodeGenerator",
     };
 
     @Override
