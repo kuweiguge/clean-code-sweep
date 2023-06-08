@@ -21,6 +21,7 @@
         <!--弹出菜单-->
         <action id="com.github.kuweiguge.cleancodesweep.actions.Menu"
                 class="com.github.kuweiguge.cleancodesweep.actions.Menu">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt C"/>
         </action>
         <!--去掉空白行-->
