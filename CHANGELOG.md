@@ -4,7 +4,22 @@
 
 ## [Unreleased]
 
+## [0.0.5] - 2023-06-08
+
+### Changed
+- Code optimization
+
+
+## [0.0.4] - 2023-06-07
+
+### Added
+- Add Function: Add annotations to class attributes according to the class attributes name, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc.
+
+### Changed
+- Optimize code
+
 ## [0.0.1] - 2023-06-05
+
 ### Added
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 - Add Function: Remove blank lines from the file.
@@ -21,3 +36,9 @@
 
 ### Changed
 - Update plugin description
+
+[Unreleased]: https://github.com/kuweiguge/clean-code-sweep/compare/v0.0.4...HEAD
+[0.0.4]: https://github.com/kuweiguge/clean-code-sweep/compare/v0.0.1...v0.0.4
+[0.0.3]: https://github.com/kuweiguge/clean-code-sweep/commits/v0.0.3
+[0.0.2]: https://github.com/kuweiguge/clean-code-sweep/compare/v0.0.3...v0.0.2
+[0.0.1]: https://github.com/kuweiguge/clean-code-sweep/compare/v0.0.2...v0.0.1

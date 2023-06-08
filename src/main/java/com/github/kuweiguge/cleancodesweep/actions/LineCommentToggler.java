@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -44,19 +45,17 @@ public class LineCommentToggler extends AnAction {
                     for (PsiField psiField : psiFields) {
                         PsiDocComment docComment = psiField.getDocComment();
                         if (docComment != null) return;
-                        PsiElement[] children = psiField.getChildren();
                         StringBuilder commentTextBuilder = new StringBuilder();
+                        PsiComment[] comments = PsiTreeUtil.getChildrenOfType(psiField, PsiComment.class);
+                        if (comments == null) return;
                         //收集所有单行注释
-                        for (PsiElement child : children) {
-                            if (child instanceof PsiComment) {
-                                PsiComment comment = (PsiComment) child;
-                                String commentText = comment.getText();
-                                if (commentText.contains(LINE_COMMENT_START)) {
-                                    commentText = commentText.replace(LINE_COMMENT_START, "").trim();
-                                    commentTextBuilder.append(SPACE).append(commentText).append(LINE_BREAK);
-                                    //删除单行注释
-                                    WriteCommandAction.runWriteCommandAction(project, comment::delete);
-                                }
+                        for (PsiComment comment : comments) {
+                            String commentText = comment.getText();
+                            if (commentText.contains(LINE_COMMENT_START)) {
+                                commentText = commentText.replace(LINE_COMMENT_START, "").trim();
+                                commentTextBuilder.append(SPACE).append(commentText).append(LINE_BREAK);
+                                //删除单行注释
+                                WriteCommandAction.runWriteCommandAction(project, comment::delete);
                             }
                         }
                         String commentText = commentTextBuilder.toString();

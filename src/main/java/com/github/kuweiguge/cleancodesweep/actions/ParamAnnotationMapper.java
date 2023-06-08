@@ -1,7 +1,6 @@
 package com.github.kuweiguge.cleancodesweep.actions;
 
 import com.github.kuweiguge.cleancodesweep.utils.FileUtils;
-import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -50,13 +49,15 @@ public class ParamAnnotationMapper extends AnAction {
                         PsiParameter[] psiParameters = psiMethod.getParameterList().getParameters();
                         for (PsiParameter psiParameter : psiParameters) {
                             // 判断当前参数是否有@Param注解
-                            PsiAnnotation methodParamAnno = AnnotationUtil.findAnnotation(psiParameter, FULL_QUALIFIED_NAME);
+                            boolean hasAnnotation = psiParameter.hasAnnotation(FULL_QUALIFIED_NAME);
                             // 如果没有@Param注解，则添加
-                            if (methodParamAnno == null) {
-                                PsiAnnotation psiAnnotation = JavaPsiFacade.getElementFactory(project).createAnnotationFromText(AT + FULL_QUALIFIED_NAME + LEFT_PAR + psiParameter.getName() + RIGHT_PAR, psiParameter);
+                            if (!hasAnnotation) {
+                                String annotationText = AT + FULL_QUALIFIED_NAME + LEFT_PAR + psiParameter.getName() + RIGHT_PAR;
+                                PsiAnnotation psiAnnotation = JavaPsiFacade.getElementFactory(project).createAnnotationFromText(annotationText, psiParameter);
+                                PsiModifierList parameterModifierList = psiParameter.getModifierList();
+                                if (parameterModifierList == null) continue;
                                 WriteCommandAction.runWriteCommandAction(project, () -> {
-                                    psiParameter.addBefore(psiAnnotation, psiParameter.getFirstChild());
-                                    // 添加注解时，使用完全限定的名称，之后调用此方法，会自动导包，并且将注解替换为短名称
+                                    parameterModifierList.add(psiAnnotation);
                                     JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiMethod);
                                 });
                             }

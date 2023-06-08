@@ -10,13 +10,28 @@ A collection of small code tools.<br>
 call menu shortcut key：<b>ctrl+alt+c</b><br>
 All functions can be used at the current file level, selected file level, and selected folder level. They will take effect on all selected files.<br>
 More small functions are under development. Welcome to [Slack](https://wintercodehq.slack.com) or GitHub issue for suggestions.
-## ToDo list
+## Function list
 - [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [x] Add Function: Remove blank lines from the file.
-- [x] Add Function: Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
-- [x] Add Function: Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
-- [x] Add Function: Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc. according to document comments.
+- [x] Remove blank lines from the file.
+- [x] Add @param annotations to the method parameters of the Mapper interface file, automatically extract the method parameter names as the value of the @Param annotation.
+- [x] Convert single-line comments of class attributes to JavaDoc comments. (Many one-click document generation plug-ins, such as FastRequest, are based on JavaDoc comments, so this function can be used with these plug-ins)
+- [x] Add annotations to class attributes according to the document comments of the class attributes, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc.
+- [x] Add annotations to class attributes according to the class attributes name, such as: generate @ApiModelProperty annotations, @ExcelProperty annotations, @JsonProperty annotations, etc.
 - [ ] Add Function: something else...
+
+## 介绍
+一组小型代码工具。<br>
+菜单快捷键：<b>ctrl+alt+c</b><br>
+所有功能都可以在当前文件级别、选定的文件级别和选定的文件夹级别使用。它们将**对所有选定的文件生效**。<br>
+更多的小功能正在开发中， 欢迎到 [Slack](https://wintercodehq.slack.com) 或者 GitHub issue 提出您的建议。
+## 功能列表
+- [x] 从 [IntelliJ Platform Plugin Template][template] 创建项目.
+- [x] 从文件中删除空行。
+- [x] 在Mapper接口文件的方法参数中添加@param注释，自动提取方法参数名称作为@Param注释的值。
+- [x] 将类属性的单行注释转换为JavaDoc注释。(许多一键文档生成插件，如FastRequest，都是基于JavaDoc注释的，因此可以与这些插件一起使用此功能)
+- [x] 根据类属性的**文档注释**添加注解，例如：生成 @ApiModelProperty 注解、@ExcelProperty 注解、@JsonProperty 注解等，以及自定义注解。
+- [x] 根据类**属性名称**添加注释，例如：生成 @ApiModelProperty 注释、@ExcelProperty 注释、@JsonProperty 注释等，以及自定义注解。
+- [ ] 更多功能开发中...
 <!-- Plugin description end -->
 
 ## Installation
