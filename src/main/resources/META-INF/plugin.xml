@@ -54,5 +54,12 @@
                 icon="AllIcons.Nodes.Field">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt F"/>
         </action>
+
+        <!--给类添加字段-->
+        <action id="com.github.kuweiguge.cleancodesweep.actions.PropertyAdder"
+                class="com.github.kuweiguge.cleancodesweep.actions.PropertyAdder"
+                icon="AllIcons.Nodes.Field">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt C"/>
+        </action>
     </actions>
 </idea-plugin>

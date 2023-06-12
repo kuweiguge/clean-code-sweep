@@ -1,25 +1,19 @@
 package com.github.kuweiguge.cleancodesweep.actions;
 
-import com.github.kuweiguge.cleancodesweep.notifications.Notifier;
-import com.github.kuweiguge.cleancodesweep.pages.CodeGeneratorPage;
 import com.github.kuweiguge.cleancodesweep.utils.FileUtils;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogPanel;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.javadoc.PsiDocComment;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static com.github.kuweiguge.cleancodesweep.panel.CodeGeneratorPaneKt.codeGeneratorPane;
 import static com.github.kuweiguge.cleancodesweep.utils.FileUtils.operationField;
 
 /**
@@ -35,14 +29,12 @@ public class DocCommentBasedCodeGenerator extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         if (project == null) return;
-        CodeGeneratorPage codeGeneratorPage = new CodeGeneratorPage(project,
-                (Void) -> operationField(e, project, "@io.swagger.annotations.ApiModelProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
-                (Void) -> operationField(e, project, "@com.alibaba.excel.annotation.ExcelProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
-                (Void) -> operationField(e, project, "@com.fasterxml.jackson.annotation.JsonProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
-                (prefix, suffix) -> operationField(e, project, prefix, suffix, params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField))
-        );
-        //创建一个
-        JBPopupFactory.getInstance().createComponentPopupBuilder(codeGeneratorPage.getRootPane(), null)
+        DialogPanel panel = codeGeneratorPane(e,
+                addApEvent -> operationField(e, project, "@io.swagger.annotations.ApiModelProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
+                addExEvent -> operationField(e, project, "@com.fasterxml.jackson.annotation.JsonProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
+                addJsEvent -> operationField(e, project, "@com.alibaba.excel.annotation.ExcelProperty(value = ", ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)),
+                prefix -> operationField(e, project, prefix, ")", params -> consumer(params.project, params.prefix, params.suffix, params.elementFactory, params.psiField)));
+        JBPopupFactory.getInstance().createComponentPopupBuilder(panel, null)
                 .setTitle(bundle.getString("title"))
                 .setMovable(true)
                 .setResizable(true)
