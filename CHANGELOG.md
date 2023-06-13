@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.0.6] - 2023-06-12
+
+### Changed
+- Use Kotlin UI DSL instead of swing UI
+- Some input boxes support code prompts.
+
 ## [0.0.5] - 2023-06-08
 
 ### Changed
